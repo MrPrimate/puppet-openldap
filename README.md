@@ -249,6 +249,10 @@ automatically when the `syncprov` parameter is used.
 
 Security strength factor assigned to `ldapi` connections.
 
+##### `log_level`
+
+Maps to the 'oclLogLevel' attribute.
+
 ##### `module_extension`
 
 The extension module files have, normally `.la`.
@@ -276,6 +280,10 @@ used as a default by the
 
 Specify minimum security strength factors in the same form as the
 `olcSecurity` attribute.
+
+##### `sizelimit`
+
+Maps to the `olcSizeLimit` attribute.
 
 ##### `ssl_ca`
 
