@@ -66,8 +66,10 @@ class openldap::server::config {
     'olcTLSProtocolMin'        => $::openldap::server::ssl_protocol,
     'olcLogLevel'              => $::openldap::server::log_level,
     'olcSizeLimit'             => $::openldap::server::sizelimit,
+    'olcRequires'              => $::openldap::server::requires,
   }
   
+  # This case work around is required as although openldap should accept none as a default it fails in startup.
   case $::openldap::server::disallows {
     'none': {
       $olc_disallows = {}

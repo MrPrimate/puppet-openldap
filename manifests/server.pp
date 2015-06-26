@@ -40,6 +40,7 @@ class openldap::server (
   $log_level           = '0',
   $sizelimit           = '500',
   $disallows           = 'none',
+  $requires            = 'none',
 ) inherits ::openldap::params {
 
   if ! defined(Class['::openldap::client']) {

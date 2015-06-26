@@ -269,6 +269,10 @@ The name of the package to install that provides the LDAP client utilities.
 
 Where `slapd` writes out its PID.
 
+##### `requires`
+
+Maps to the 'olcRequires' attribute.
+
 ##### `replica_dn`
 
 The Distinguished Name used by consumer/slave servers to connect to this
