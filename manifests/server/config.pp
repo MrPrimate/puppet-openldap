@@ -139,6 +139,7 @@ class openldap::server::config {
         'olcFrontendConfig',
       ],
       'olcDatabase' => '{-1}frontend',
+      'olcRequires' => $::openldap::server::requires,
     },
   }
 
