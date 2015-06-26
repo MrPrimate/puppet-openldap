@@ -49,26 +49,39 @@ class openldap::server::config {
       }
     }
   }
+  
+  $confg_core_variables = {
+    'cn'                       => 'config',
+    'objectClass'              => 'olcGlobal',
+    'olcArgsFile'              => $::openldap::server::args_file,
+    'olcLocalSSF'              => $::openldap::server::local_ssf,
+    'olcPidFile'               => $::openldap::server::pid_file,
+    'olcSecurity'              => $::openldap::server::security,
+    'olcTLSCACertificateFile'  => $::openldap::server::ssl_ca,
+    'olcTLSCACertificatePath'  => $::openldap::server::ssl_certs_dir,
+    'olcTLSCertificateFile'    => $::openldap::server::ssl_cert,
+    'olcTLSCertificateKeyFile' => $::openldap::server::ssl_key,
+    'olcTLSCipherSuite'        => $::openldap::server::ssl_cipher,
+    'olcTLSDHParamFile'        => $::openldap::server::ssl_dhparam,
+    'olcTLSProtocolMin'        => $::openldap::server::ssl_protocol,
+    'olcLogLevel'              => $::openldap::server::log_level,
+    'olcSizeLimit'             => $::openldap::server::sizelimit,
+  }
+  
+  case $::openldap::server::disallows {
+    'none': {
+      $olc_disallows = {}
+    }
+    default: {
+      $olc_disallows = { 'olcDisallows' => $::openldap::server::disallows }
+    }
+  }
+  
+  $confg_variables = merge($confg_core_variables, $olc_disallows)
 
   openldap { 'cn=config':
     ensure     => present,
-    attributes => {
-      'cn'                       => 'config',
-      'objectClass'              => 'olcGlobal',
-      'olcArgsFile'              => $::openldap::server::args_file,
-      'olcLocalSSF'              => $::openldap::server::local_ssf,
-      'olcPidFile'               => $::openldap::server::pid_file,
-      'olcSecurity'              => $::openldap::server::security,
-      'olcTLSCACertificateFile'  => $::openldap::server::ssl_ca,
-      'olcTLSCACertificatePath'  => $::openldap::server::ssl_certs_dir,
-      'olcTLSCertificateFile'    => $::openldap::server::ssl_cert,
-      'olcTLSCertificateKeyFile' => $::openldap::server::ssl_key,
-      'olcTLSCipherSuite'        => $::openldap::server::ssl_cipher,
-      'olcTLSDHParamFile'        => $::openldap::server::ssl_dhparam,
-      'olcTLSProtocolMin'        => $::openldap::server::ssl_protocol,
-      'olcLogLevel'              => $::openldap::server::log_level,
-      'olcSizeLimit'             => $::openldap::server::sizelimit,
-    },
+    attributes => $confg_variables,
   }
 
   $module_candidates = [

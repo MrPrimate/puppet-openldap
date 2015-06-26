@@ -215,6 +215,10 @@ unmanaged files in the top-level directory will be purged.
 
 The chosen database backend, usually one of `hdb`, `bdb`, or `mdb`.
 
+##### `disallows`
+
+Sets the 'olcDisallows' attribure.
+
 ##### `group`
 
 The group that runs the `slapd` process.
