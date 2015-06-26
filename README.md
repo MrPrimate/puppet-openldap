@@ -271,7 +271,7 @@ Where `slapd` writes out its PID.
 
 ##### `requires`
 
-Maps to the 'olcRequires' attribute.
+Maps to the 'olcRequires' attribute. This will apply to cn-config and frontend,cn=config.
 
 ##### `replica_dn`
 
