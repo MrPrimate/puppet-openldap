@@ -37,6 +37,8 @@ class openldap::server (
   $syncrepl            = undef,
   $update_ref          = undef,
   $user                = $::openldap::params::user,
+  $log_level           = '0',
+  $sizelimit           = '500',
 ) inherits ::openldap::params {
 
   if ! defined(Class['::openldap::client']) {

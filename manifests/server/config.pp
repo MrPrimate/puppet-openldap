@@ -66,6 +66,8 @@ class openldap::server::config {
       'olcTLSCipherSuite'        => $::openldap::server::ssl_cipher,
       'olcTLSDHParamFile'        => $::openldap::server::ssl_dhparam,
       'olcTLSProtocolMin'        => $::openldap::server::ssl_protocol,
+      'olcLogLevel'              => $::openldap::server::log_level,
+      'olcSizeLimit'             => $::openldap::server::sizelimit,
     },
   }
 
