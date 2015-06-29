@@ -102,6 +102,10 @@ class openldap::server::config {
     $::openldap::server::accesslog ? {
       true    => 'accesslog',
       default => '',
+    },
+    $::openldap::server::auditlog ? {
+      true    => 'auditlog',
+      default => '',
     }
   ]
 
@@ -130,7 +134,7 @@ class openldap::server::config {
   ::openldap::server::schema { 'core':
     position => 0,
   }
-
+  
   openldap { 'olcDatabase={-1}frontend,cn=config':
     ensure     => present,
     attributes => {
@@ -142,7 +146,7 @@ class openldap::server::config {
       'olcRequires' => $::openldap::server::requires,
     },
   }
-
+  
   openldap { 'olcDatabase={0}config,cn=config':
     ensure     => present,
     attributes => {
@@ -251,6 +255,13 @@ class openldap::server::config {
     group  => $group,
     mode   => '0600',
   }
+  
+  file { "${data_directory}/log":
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0600',
+  }
 
   openldap { "olcDatabase={${db_index}}${db_backend},cn=config":
     ensure     => present,
@@ -270,6 +281,7 @@ class openldap::server::config {
       # slave/consumer
       'olcSyncrepl'    => $::openldap::server::syncrepl,
       'olcUpdateRef'   => $::openldap::server::update_ref,
+      'olcSecurity'      => 'tls=1',
     },
     require    => Openldap['cn=module{0},cn=config'],
   }
@@ -306,6 +318,21 @@ class openldap::server::config {
         },
         require    => Openldap['cn=module{0},cn=config'],
       }
+    }
+  }
+  
+  if $::openldap::server::auditlog {
+    openldap { 'olcOverlay={0}auditlog,olcDatabase={-1}frontend,cn=config': # lint:ignore:80chars
+      ensure     => present,
+      attributes => {
+        'objectClass' => [
+          'olcOverlayConfig',
+          'olcAuditlogConfig',
+        ],
+        'olcOverlay' => '{0}auditlog',
+        'olcAuditlogFile' => "${data_directory}/log/auditlog.log"
+      },
+      require    => [ Openldap['olcDatabase={-1}frontend,cn=config'], Openldap['cn=module{0},cn=config' ]],
     }
   }
 }

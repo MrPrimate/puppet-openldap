@@ -200,6 +200,10 @@ be accessed by consumers.
 
 Where `slapd` writes out its command-line arguments.
 
+##### `auditlog`
+
+True or False, turns on auditlog module.
+
 ##### `backend_modules`
 
 An array of database backends that are built as modules and therefore require
