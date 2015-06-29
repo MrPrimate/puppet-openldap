@@ -50,7 +50,7 @@ class openldap::server::config {
     }
   }
   
-  $confg_core_variables = {
+  $config_core_attributes = {
     'cn'                       => 'config',
     'objectClass'              => 'olcGlobal',
     'olcArgsFile'              => $::openldap::server::args_file,
@@ -79,11 +79,11 @@ class openldap::server::config {
     }
   }
   
-  $confg_variables = merge($confg_core_variables, $olc_disallows)
+  $config_attributes = merge($config_core_attributes, $olc_disallows)
 
   openldap { 'cn=config':
     ensure     => present,
-    attributes => $confg_variables,
+    attributes => $config_attributes,
   }
 
   $module_candidates = [
@@ -262,27 +262,39 @@ class openldap::server::config {
     group  => $group,
     mode   => '0600',
   }
+  
+  db_core_attributes => {
+    'objectClass'    => [
+      'olcDatabaseConfig',
+      $object_class,
+    ],
+    'olcAccess'      => openldap_values($access),
+    'olcDatabase'    => "{${db_index}}${db_backend}",
+    'olcDbDirectory' => "${data_directory}/data",
+    'olcDbIndex'     => $indices,
+    'olcLimits'      => openldap_values($limits),
+    'olcRootDN'      => $::openldap::server::root_dn,
+    'olcRootPW'      => $::openldap::server::root_password,
+    'olcSuffix'      => $::openldap::server::suffix,
+    # slave/consumer
+    'olcSyncrepl'    => $::openldap::server::syncrepl,
+    'olcUpdateRef'   => $::openldap::server::update_ref,
+  }
+  
+  case $::openldap::server::db_security {
+    false: {
+      $db_security_attributes = {}
+    }
+    default: {
+      $db_security_attributes = { 'olcSecurity' => $::openldap::server::db_security }
+    }
+  }
+  
+  $db_attributes = merge($db_core_attributes, $db_security_attributes)
 
   openldap { "olcDatabase={${db_index}}${db_backend},cn=config":
     ensure     => present,
-    attributes => {
-      'objectClass'    => [
-        'olcDatabaseConfig',
-        $object_class,
-      ],
-      'olcAccess'      => openldap_values($access),
-      'olcDatabase'    => "{${db_index}}${db_backend}",
-      'olcDbDirectory' => "${data_directory}/data",
-      'olcDbIndex'     => $indices,
-      'olcLimits'      => openldap_values($limits),
-      'olcRootDN'      => $::openldap::server::root_dn,
-      'olcRootPW'      => $::openldap::server::root_password,
-      'olcSuffix'      => $::openldap::server::suffix,
-      # slave/consumer
-      'olcSyncrepl'    => $::openldap::server::syncrepl,
-      'olcUpdateRef'   => $::openldap::server::update_ref,
-      'olcSecurity'      => 'tls=1',
-    },
+    attributes => $db_attributes,
     require    => Openldap['cn=module{0},cn=config'],
   }
 
