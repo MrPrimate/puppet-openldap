@@ -263,7 +263,7 @@ class openldap::server::config {
     mode   => '0600',
   }
   
-  db_core_attributes = {
+  $db_core_attributes = {
     'objectClass'    => [
       'olcDatabaseConfig',
       $object_class,
