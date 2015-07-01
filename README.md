@@ -1,3 +1,9 @@
+
+THIS IS A FORKED COPY OF https://github.com/bodgit/puppet-openldap
+
+It has been modified to take account of some of the unique combination of features our LDAP system needs.
+
+
 # openldap
 
 Tested with Travis CI
@@ -218,6 +224,10 @@ unmanaged files in the top-level directory will be purged.
 ##### `db_backend`
 
 The chosen database backend, usually one of `hdb`, `bdb`, or `mdb`.
+
+##### `db_security`
+
+Applies olcSecurity just to the backend database, this might be required as setting a level of olcSecurity can cause the puppet module to stop working with ldapi call to slapcat and ldapmodify.
 
 ##### `disallows`
 

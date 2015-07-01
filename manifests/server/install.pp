@@ -69,9 +69,10 @@ class openldap::server::install {
     ensure             => directory,
     owner              => $user,
     group              => $group,
-    source_permissions => use_when_creating,
+    source_permissions => ignore,
+    mode               => '0644',
     replace            => false,
-    recurse            => true,
+    recurse            => remote,
     source             => "puppet:///modules/openldap/${::osfamily}/slapd.d",
     before             => Package[$package_name],
     require            => [

@@ -27,7 +27,7 @@ Puppet::Type.newtype(:openldap) do
 
       # Prune any nils or zero-length values from each value array
       value.each do |k,v|
-        v.reject! { |x| !x or x == :undef or x == '' }
+        v.reject! { |x| !x or x == :undef or x == '' or x == 'undef' }
       end
 
       # Ensure every value is a string

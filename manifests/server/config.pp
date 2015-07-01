@@ -50,7 +50,7 @@ class openldap::server::config {
     }
   }
   
-  $config_core_attributes = {
+  $config_attributes = {
     'cn'                       => 'config',
     'objectClass'              => 'olcGlobal',
     'olcArgsFile'              => $::openldap::server::args_file,
@@ -67,19 +67,8 @@ class openldap::server::config {
     'olcLogLevel'              => $::openldap::server::log_level,
     'olcSizeLimit'             => $::openldap::server::sizelimit,
     'olcRequires'              => $::openldap::server::requires,
+    'olcDisallows'             => $::openldap::server::disallows,
   }
-  
-  # This case work around is required as although openldap should accept none as a default it fails in startup.
-  case $::openldap::server::disallows {
-    'none': {
-      $olc_disallows = {}
-    }
-    default: {
-      $olc_disallows = { 'olcDisallows' => $::openldap::server::disallows }
-    }
-  }
-  
-  $config_attributes = merge($config_core_attributes, $olc_disallows)
 
   openldap { 'cn=config':
     ensure     => present,
@@ -258,6 +247,14 @@ class openldap::server::config {
   
   file { "${data_directory}/log":
     ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0600',
+  }
+  
+  file { "${data_directory}/data/DB_CONFIG":
+    ensure => file,
+    content => template('openldap/DB_CONFIG.erb'),
     owner  => $user,
     group  => $group,
     mode   => '0600',
