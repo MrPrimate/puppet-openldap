@@ -30,7 +30,7 @@ class openldap::server::install {
         ensure => file,
         owner  => 0,
         group  => 0,
-        mode   => '0644',
+        mode   => '0640',
         source => "puppet:///modules/openldap/${::osfamily}/slapd.preseed",
         before => Package[$package_name],
       }
@@ -70,9 +70,9 @@ class openldap::server::install {
     owner              => $user,
     group              => $group,
     source_permissions => ignore,
-    mode               => '0644',
+    mode               => '0640',
     replace            => false,
-    recurse            => remote,
+    recurse            => true,
     source             => "puppet:///modules/openldap/${::osfamily}/slapd.d",
     before             => Package[$package_name],
     require            => [
