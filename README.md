@@ -1,9 +1,3 @@
-
-THIS IS A FORKED COPY OF https://github.com/bodgit/puppet-openldap
-
-It has been modified to take account of some of the unique combination of features our LDAP system needs.
-
-
 # openldap
 
 Tested with Travis CI
@@ -271,6 +265,14 @@ Security strength factor assigned to `ldapi` connections.
 
 Maps to the 'oclLogLevel' attribute.
 
+##### `mirror_mode_conf`
+
+Maps to the 'oclMirrorMode' attribute. This applies to the global conf only.
+
+##### `mirror_mode_db`
+
+Maps to the 'oclMirrorMode' attribute. This applies to the database only.
+
 ##### `module_extension`
 
 The extension module files have, normally `.la`.
@@ -302,6 +304,10 @@ used as a default by the
 
 Specify minimum security strength factors in the same form as the
 `olcSecurity` attribute.
+
+##### `security`
+
+Specify the olcServerID name/array for replication configuration.
 
 ##### `sizelimit`
 
