@@ -305,7 +305,7 @@ used as a default by the
 Specify minimum security strength factors in the same form as the
 `olcSecurity` attribute.
 
-##### `security`
+##### `server_id`
 
 Specify the olcServerID name/array for replication configuration.
 
