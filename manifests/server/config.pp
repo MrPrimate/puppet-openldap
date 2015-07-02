@@ -12,6 +12,7 @@ class openldap::server::config {
   # Wrap each 'address:port' with the correct URL scheme and trailing '/'
   $ldap_interfaces = suffix(prefix($::openldap::server::ldap_interfaces, 'ldap://'), '/')
   $ldaps_interfaces = suffix(prefix($::openldap::server::ldaps_interfaces, 'ldaps://'), '/')
+  #$fqdn_interfaces = suffix(prefix([$fqdn], 'ldap://'), '/')
 
   file { $data_directory:
     ensure       => directory,
@@ -57,6 +58,7 @@ class openldap::server::config {
     'olcLocalSSF'              => $::openldap::server::local_ssf,
     'olcPidFile'               => $::openldap::server::pid_file,
     'olcSecurity'              => $::openldap::server::security,
+    'olcServerID'              => $::openldap::server::server_id,
     'olcTLSCACertificateFile'  => $::openldap::server::ssl_ca,
     'olcTLSCACertificatePath'  => $::openldap::server::ssl_certs_dir,
     'olcTLSCertificateFile'    => $::openldap::server::ssl_cert,
@@ -65,6 +67,7 @@ class openldap::server::config {
     'olcTLSDHParamFile'        => $::openldap::server::ssl_dhparam,
     'olcTLSProtocolMin'        => $::openldap::server::ssl_protocol,
     'olcLogLevel'              => $::openldap::server::log_level,
+    'olcMirrorMode'            => $::openldap::server::mirror_mode_conf,
     'olcSizeLimit'             => $::openldap::server::sizelimit,
     'olcRequires'              => $::openldap::server::requires,
     'olcDisallows'             => $::openldap::server::disallows,
@@ -173,7 +176,7 @@ class openldap::server::config {
 
     # accesslog overlay is required, i.e. delta-syncrepl
     if $::openldap::server::accesslog {
-      
+
       openldap { "olcDatabase={2}${db_backend},cn=config":
         ensure     => present,
         attributes => {
@@ -269,6 +272,7 @@ class openldap::server::config {
     # slave/consumer
     'olcSyncrepl'    => $::openldap::server::syncrepl,
     'olcUpdateRef'   => $::openldap::server::update_ref,
+    'olcMirrorMode'  => $::openldap::server::mirror_mode_db,
   }
   
   case $::openldap::server::db_security {
