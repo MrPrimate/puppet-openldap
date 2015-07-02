@@ -173,14 +173,7 @@ class openldap::server::config {
 
     # accesslog overlay is required, i.e. delta-syncrepl
     if $::openldap::server::accesslog {
-
-      file { "${data_directory}/log":
-        ensure => directory,
-        owner  => $user,
-        group  => $group,
-        mode   => '0600',
-      }
-
+      
       openldap { "olcDatabase={2}${db_backend},cn=config":
         ensure     => present,
         attributes => {
