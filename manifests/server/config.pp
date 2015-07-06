@@ -256,6 +256,8 @@ class openldap::server::config {
     mode   => '0600',
   }
   
+  $syncrepl = openldap_values($::openldap::server::syncrepl)
+  
   $db_core_attributes = {
     'objectClass'    => [
       'olcDatabaseConfig',
@@ -270,7 +272,7 @@ class openldap::server::config {
     'olcRootPW'      => $::openldap::server::root_password,
     'olcSuffix'      => $::openldap::server::suffix,
     # slave/consumer
-    'olcSyncrepl'    => $::openldap::server::syncrepl,
+    'olcSyncrepl'    => $syncrepl,
     'olcUpdateRef'   => $::openldap::server::update_ref,
     'olcMirrorMode'  => $::openldap::server::mirror_mode_db,
   }
