@@ -202,7 +202,11 @@ Where `slapd` writes out its command-line arguments.
 
 ##### `auditlog`
 
-True or False, turns on auditlog module.
+Setting this to `true` will enable the `auditlog` overlay.
+
+##### `auditlog_file`
+
+The LDIF file where the `auditlog` overlay writes any changes.
 
 ##### `backend_modules`
 

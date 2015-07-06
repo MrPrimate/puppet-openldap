@@ -1,4 +1,6 @@
 #
+include stdlib
+
 class openldap (
   $package_name                  = $::openldap::params::base_package_name,
   $conf_dir                      = $::openldap::params::conf_dir,

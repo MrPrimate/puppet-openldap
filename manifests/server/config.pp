@@ -12,7 +12,6 @@ class openldap::server::config {
   # Wrap each 'address:port' with the correct URL scheme and trailing '/'
   $ldap_interfaces = suffix(prefix($::openldap::server::ldap_interfaces, 'ldap://'), '/')
   $ldaps_interfaces = suffix(prefix($::openldap::server::ldaps_interfaces, 'ldaps://'), '/')
-  #$fqdn_interfaces = suffix(prefix([$fqdn], 'ldap://'), '/')
 
   file { $data_directory:
     ensure       => directory,
@@ -51,31 +50,29 @@ class openldap::server::config {
     }
   }
   
-  $config_attributes = {
-    'cn'                       => 'config',
-    'objectClass'              => 'olcGlobal',
-    'olcArgsFile'              => $::openldap::server::args_file,
-    'olcLocalSSF'              => $::openldap::server::local_ssf,
-    'olcPidFile'               => $::openldap::server::pid_file,
-    'olcSecurity'              => $::openldap::server::security,
-    'olcServerID'              => $::openldap::server::server_id,
-    'olcTLSCACertificateFile'  => $::openldap::server::ssl_ca,
-    'olcTLSCACertificatePath'  => $::openldap::server::ssl_certs_dir,
-    'olcTLSCertificateFile'    => $::openldap::server::ssl_cert,
-    'olcTLSCertificateKeyFile' => $::openldap::server::ssl_key,
-    'olcTLSCipherSuite'        => $::openldap::server::ssl_cipher,
-    'olcTLSDHParamFile'        => $::openldap::server::ssl_dhparam,
-    'olcTLSProtocolMin'        => $::openldap::server::ssl_protocol,
-    'olcLogLevel'              => $::openldap::server::log_level,
-    'olcMirrorMode'            => $::openldap::server::mirror_mode_conf,
-    'olcSizeLimit'             => $::openldap::server::sizelimit,
-    'olcRequires'              => $::openldap::server::requires,
-    'olcDisallows'             => $::openldap::server::disallows,
-  }
-
   openldap { 'cn=config':
     ensure     => present,
-    attributes => $config_attributes,
+    attributes =>  {
+      'cn'                       => 'config',
+      'objectClass'              => 'olcGlobal',
+      'olcArgsFile'              => $::openldap::server::args_file,
+      'olcLocalSSF'              => $::openldap::server::local_ssf,
+      'olcPidFile'               => $::openldap::server::pid_file,
+      'olcSecurity'              => $::openldap::server::security,
+      'olcServerID'              => $::openldap::server::server_id,
+      'olcTLSCACertificateFile'  => $::openldap::server::ssl_ca,
+      'olcTLSCACertificatePath'  => $::openldap::server::ssl_certs_dir,
+      'olcTLSCertificateFile'    => $::openldap::server::ssl_cert,
+      'olcTLSCertificateKeyFile' => $::openldap::server::ssl_key,
+      'olcTLSCipherSuite'        => $::openldap::server::ssl_cipher,
+      'olcTLSDHParamFile'        => $::openldap::server::ssl_dhparam,
+      'olcTLSProtocolMin'        => $::openldap::server::ssl_protocol,
+      'olcLogLevel'              => $::openldap::server::log_level,
+      'olcMirrorMode'            => $::openldap::server::mirror_mode_conf,
+      'olcSizeLimit'             => $::openldap::server::sizelimit,
+      'olcRequires'              => $::openldap::server::requires,
+      'olcDisallows'             => $::openldap::server::disallows,
+    },
   }
 
   $module_candidates = [
@@ -326,19 +323,25 @@ class openldap::server::config {
         },
         require    => Openldap['cn=module{0},cn=config'],
       }
+      
+      $overlay_index = 2
+    } else {
+      $overlay_index = 1
+      }
+  } else {
+    $overlay_index = 0
     }
-  }
   
   if $::openldap::server::auditlog {
-    openldap { 'olcOverlay={0}auditlog,olcDatabase={-1}frontend,cn=config': # lint:ignore:80chars
+    openldap { "olcOverlay={${overlay_index}}auditlog,olcDatabase={${db_index}}${db_backend},cn=config": # lint:ignore:80chars
       ensure     => present,
       attributes => {
         'objectClass' => [
           'olcOverlayConfig',
           'olcAuditlogConfig',
         ],
-        'olcOverlay' => '{0}auditlog',
-        'olcAuditlogFile' => "${data_directory}/log/auditlog.log"
+        'olcOverlay' => "{${overlay_index}}auditlog",
+        'olcAuditlogFile' => $::openldap::server::auditlog_file,
       },
       require    => [ Openldap['olcDatabase={-1}frontend,cn=config'], Openldap['cn=module{0},cn=config' ]],
     }
